@@ -1,18 +1,17 @@
-package org.firstinspires.ftc.teamcode;
-
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+package org.firstinspires.ftc.teamcode.command;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-public class Teledrive extends CommandBase {
+import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
+
+public class TeledriveCommand extends CommandBase {
     DriveSubsystem driveSubsystem;
     private double power = 0;
     private Gamepad gamepad1;
 
-    public Teledrive(DriveSubsystem driveSubsystem, Gamepad gamepad1, double power) {
+    public TeledriveCommand(DriveSubsystem driveSubsystem, Gamepad gamepad1, double power) {
         this.driveSubsystem = driveSubsystem;
         addRequirements(driveSubsystem);
         this.power = power;
