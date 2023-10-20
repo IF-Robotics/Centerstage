@@ -12,6 +12,7 @@ public class IntakeSubsystem extends SubsystemBase {
     private DcMotorEx motor;
     private ServoEx servo;
     private Telemetry telemetry;
+    public double up = 0, down = 1; //TODO: make these actually the real values
 
     public IntakeSubsystem(DcMotorEx motor, ServoEx servo, Telemetry telemetry) {
         this.motor = motor;
@@ -23,7 +24,7 @@ public class IntakeSubsystem extends SubsystemBase {
         motor.setPower(power);
     }
 
-    public void setServo(double position) {
+    public void setPosition(double position) {
         servo.setPosition(position);
     }
 

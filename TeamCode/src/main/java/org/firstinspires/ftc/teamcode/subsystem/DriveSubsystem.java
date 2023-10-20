@@ -59,6 +59,16 @@ public class DriveSubsystem extends SubsystemBase {
         );
     }
 
+    //field centric
+    public boolean teleDrive(Gamepad gamepad1, double power, boolean isFieldCentric) {
+        if(!isFieldCentric) {
+            teleDrive(gamepad1, power);
+            return false;
+        }
+        //TODO: add field centric code here
+        return true;
+    }
+
     private void setAllPower(double BL, double BR, double FL, double FR) {
         this.BL.setPower(BL);
         this.BR.setPower(BR);
