@@ -22,12 +22,13 @@ public class Teleop extends CommandOpMode {
     private Command intakeDown, intakeUp, shootPlane;
     CommandScheduler scheduler = CommandScheduler.getInstance();
     private Button up, down, x2, lb2, rb2;
-    private GamepadEx gpad2 = new GamepadEx(gamepad2);
+    private GamepadEx gpad2;
     private TransferPixelCommand transfer;
     Main robot;
 
     @Override
     public void initialize() {
+        gpad2 = new GamepadEx(gamepad2);
         configureButtons();
         robot = new Main("tele", hardwareMap, telemetry);
         configureCommands();
@@ -39,7 +40,7 @@ public class Teleop extends CommandOpMode {
         robot.driveSubsystem.setDefaultCommand(mecanumCommand);
 
         //1 button for intake: spins & lowers intake, then when released it outtakes and comes up again
-        x2.whenPressed(intakeDown);
+        /*x2.whenPressed(intakeDown);
         x2.whenReleased(intakeUp);
 
         //button for picking up pixels and setting up for scoring
@@ -65,7 +66,7 @@ public class Teleop extends CommandOpMode {
 
         //field centric arcade gm0 for dt
         // 3 speeds: normal (full speed), slow speed for scoring (left trigger), medium for intaking (right trigger) --> integrated in
-    }
+    */}
 
     public void configureCommands() {
         mecanumCommand = new TeledriveCommand(robot.driveSubsystem, gamepad1);

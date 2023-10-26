@@ -2,15 +2,16 @@ package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class AirplaneSubsystem extends SubsystemBase {
-    private ServoEx servo;
+    private Servo servo;
     private Telemetry telemetry;
     public double reset = 0, shoot = 1; //TODO: make real values
 
-    public AirplaneSubsystem(ServoEx servo, Telemetry telemetry) {
+    public AirplaneSubsystem(Servo servo, Telemetry telemetry) {
         this.servo = servo;
         this.telemetry = telemetry;
     }

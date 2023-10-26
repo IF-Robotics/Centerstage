@@ -2,15 +2,18 @@ package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class ArmSubsystem extends SubsystemBase {
     private DcMotorEx slide1, slide2;
-    private ServoEx arm1, arm2, wrist;
+    private CRServo arm1, arm2;
+    private Servo wrist;
 
     private double slidePower;
 
-    public ArmSubsystem(DcMotorEx slide1, DcMotorEx slide2, ServoEx arm1, ServoEx arm2, ServoEx wrist) {
+    public ArmSubsystem(DcMotorEx slide1, DcMotorEx slide2, CRServo arm1, CRServo arm2, Servo wrist) {
         this.slide1 = slide1;
         this.slide2 = slide2;
         this.arm1 = arm1;

@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.hardware.ServoEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystem.AirplaneSubsystem;
@@ -17,7 +18,8 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 public class Main {
 
     public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
-    public ServoEx inServo, arm1, arm2, wrist, drone, Rclaw, Lclaw;
+    public Servo inServo, wrist, drone, Rclaw, Lclaw;
+    public CRServo arm1, arm2;
     private HardwareMap hardwareMap;
 
     public DriveSubsystem driveSubsystem;
@@ -52,13 +54,13 @@ public class Main {
 
         //intake subsystem
         inMotor = hardwareMap.get(DcMotorEx.class, "inMotor");
-        inServo = hardwareMap.get(ServoEx.class, "inServo");
+        inServo = hardwareMap.get(Servo.class, "inServo");
         intakeSubsystem = new IntakeSubsystem(inMotor, inServo, telemetry);
         scheduler.registerSubsystem(intakeSubsystem);
 
         //claw subsystem
-        Rclaw = hardwareMap.get(ServoEx.class, "Rclaw");
-        Lclaw = hardwareMap.get(ServoEx.class, "Lclaw");
+        Rclaw = hardwareMap.get(Servo.class, "Rclaw");
+        Lclaw = hardwareMap.get(Servo.class, "Lclaw");
         clawSubsystem = new ClawSubsystem(Rclaw, Lclaw);
         scheduler.registerSubsystem(clawSubsystem);
 
@@ -68,16 +70,16 @@ public class Main {
         scheduler.registerSubsystem(climbSubsystem);
 
         //arm subsysem
-        arm1 = hardwareMap.get(ServoEx.class, "arm1");
-        arm2 = hardwareMap.get(ServoEx.class, "arm2");
+        arm1 = hardwareMap.get(CRServo.class, "arm1");
+        arm2 = hardwareMap.get(CRServo.class, "arm2");
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
-        wrist = hardwareMap.get(ServoEx.class, "wrist");
+        wrist = hardwareMap.get(Servo.class, "wrist");
         armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, wrist);
         scheduler.registerSubsystem(armSubsystem);
 
         //airplane subsystem
-        drone = hardwareMap.get(ServoEx.class, "plane");
+        drone = hardwareMap.get(Servo.class, "plane");
         airplaneSubsystem = new AirplaneSubsystem(drone, telemetry);
         scheduler.registerSubsystem(airplaneSubsystem);
 

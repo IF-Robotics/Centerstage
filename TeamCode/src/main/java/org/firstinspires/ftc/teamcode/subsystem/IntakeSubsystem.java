@@ -10,11 +10,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class IntakeSubsystem extends SubsystemBase {
     private DcMotorEx motor;
-    private ServoEx servo;
+    private Servo servo;
     private Telemetry telemetry;
     public double up = 0, down = 1; //TODO: make these actually the real values
 
-    public IntakeSubsystem(DcMotorEx motor, ServoEx servo, Telemetry telemetry) {
+    public IntakeSubsystem(DcMotorEx motor, Servo servo, Telemetry telemetry) {
         this.motor = motor;
         this.servo = servo;
         this.telemetry = telemetry;
