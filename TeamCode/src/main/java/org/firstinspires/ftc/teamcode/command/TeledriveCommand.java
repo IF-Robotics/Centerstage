@@ -31,7 +31,7 @@ public class TeledriveCommand extends CommandBase {
         } else if(gamepad1.right_bumper) {
              tempPower = power - .2;
         }
-        driveSubsystem.teleDrive(gamepad1, tempPower, false);
+        driveSubsystem.teleDrive(gamepad1, tempPower, true);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -42,18 +44,30 @@ public class Main {
         CommandScheduler scheduler = CommandScheduler.getInstance();
         scheduler.reset();
 
+        //imu
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+        // Adjust the orientation parameters to match your robot
+        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        // Without this, the REV Hub's orientation is assumed to be logo up / USB forward
+        imu.initialize(parameters);
+
         //drive subsystem
         BL = hardwareMap.get(DcMotorEx.class, "BL");
         BR = hardwareMap.get(DcMotorEx.class, "BR");
         FL = hardwareMap.get(DcMotorEx.class, "FL");
         FR = hardwareMap.get(DcMotorEx.class, "FR");
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        driveSubsystem = new DriveSubsystem(BL, BR, FL, FR, telemetry);
+        BL.setDirection(DcMotorSimple.Direction.REVERSE);
+        FL.setDirection(DcMotorSimple.Direction.REVERSE);
+        BR.setDirection(DcMotorSimple.Direction.FORWARD);
+        FR.setDirection(DcMotorSimple.Direction.FORWARD);
+        driveSubsystem = new DriveSubsystem(BL, BR, FL, FR, imu, telemetry);
         scheduler.registerSubsystem(driveSubsystem);
 
         //intake subsystem
         inMotor = hardwareMap.get(DcMotorEx.class, "inMotor");
+        inMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         inServo = hardwareMap.get(Servo.class, "inServo");
         intakeSubsystem = new IntakeSubsystem(inMotor, inServo, telemetry);
         scheduler.registerSubsystem(intakeSubsystem);
