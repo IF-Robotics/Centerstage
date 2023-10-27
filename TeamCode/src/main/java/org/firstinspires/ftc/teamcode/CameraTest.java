@@ -18,6 +18,7 @@ public class CameraTest extends LinearOpMode {
         builder.enableLiveView(true);
         visionPortal = builder.build();
 
+        waitForStart();
         while(opModeIsActive()) {
             sleep(20);
             visionPortal.resumeStreaming();
