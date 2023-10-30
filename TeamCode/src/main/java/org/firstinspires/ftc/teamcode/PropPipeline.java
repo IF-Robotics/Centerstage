@@ -55,12 +55,13 @@ public class PropPipeline extends OpenCvPipeline {
             // so half the precision of a normal color wheel for hue,
             // then saturation and value go to 255,
             // you need to convert the normal 0-100 to 0-255
-            Core.inRange(hsv, new Scalar(10,10,10), new Scalar(140,255,255), tresh);
+            Core.inRange(hsv, new Scalar(140,0*255/100,40*255/100), new Scalar(180,20*255/100,100*255/100), tresh);
+//            Core.inRange(hsv, new Scalar(120,0,80), new Scalar(180,60,140), tresh);
 
             Imgproc.findContours(tresh, contours, hierarchy, Imgproc.RETR_TREE
                     , Imgproc.CHAIN_APPROX_NONE);
             maxArea=0;
-            maxContour=null;
+//            maxContour=null;
             MatOfPoint2f contourMat = new MatOfPoint2f();
             RotatedRect maxRect = new RotatedRect();
             maxWidth = 0;
@@ -79,7 +80,7 @@ public class PropPipeline extends OpenCvPipeline {
                 catch(Exception e) {
                     Log.println(Log.ERROR,"im still here >:D","aughhhh "+i+" "+contours.size());
                 }
-                if ( (area>200) && (area > maxArea) ) {
+                if ( (area>800) && (area > maxArea) ) {
                     maxArea=area;
                     maxWidth = width;
                     maxContour=contours.get(i);
@@ -145,4 +146,18 @@ public class PropPipeline extends OpenCvPipeline {
             }
             return -404;
         }
+
+        public double getArea() {
+            if(maxContour!=null&& !maxContour.empty()) {
+                try {
+                    return Imgproc.contourArea(maxContour);
+                }
+                catch (Exception e) {
+                    return 69;
+                }
+            }
+            return -404;
+        }
     }
+
+

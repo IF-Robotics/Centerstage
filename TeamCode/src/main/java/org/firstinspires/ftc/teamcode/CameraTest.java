@@ -11,6 +11,15 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 @TeleOp
 public class CameraTest extends LinearOpMode {
     private PropPipeline aPipe;
+    /*private OpenCvCamera.AsyncCameraOpenListener listener = new OpenCvCamera.AsyncCameraOpenListener() {
+        @Override
+        public void onOpened() {
+            autoCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+        }
+        @Override
+        public void onError(int errorCode) {
+        }
+    };*/
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -18,10 +27,28 @@ public class CameraTest extends LinearOpMode {
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         WebcamName AName = hardwareMap.get(WebcamName.class, "Webcam 1");
         OpenCvCamera autoCam = OpenCvCameraFactory.getInstance().createWebcam(AName, cameraMonitorViewId);
-        autoCam.openCameraDevice();
+        autoCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                autoCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+            }
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
         this.aPipe = new PropPipeline();
         autoCam.setPipeline(aPipe);
-        startCamera(autoCam);
+
+        autoCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                autoCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+            }
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
+
         telemetry.addLine("waiting for start");
         telemetry.update();
 
@@ -30,21 +57,8 @@ public class CameraTest extends LinearOpMode {
             sleep(20);
             telemetry.addData("x-value", aPipe.getX());
             telemetry.addData("y-value", aPipe.getY());
+            telemetry.addData("max area", aPipe.getMaxContour());
             telemetry.update();
-        }
-    }
-
-    public void startCamera(OpenCvCamera wcam) {
-        if (!isStopRequested()) {
-            try {
-                wcam.openCameraDevice();
-                wcam.startStreaming(640,480, OpenCvCameraRotation.UPRIGHT);
-            }
-            catch (Exception e) {
-                telemetry.addData("error",e);
-                telemetry.update();
-                startCamera(wcam);
-            }
         }
     }
 }
