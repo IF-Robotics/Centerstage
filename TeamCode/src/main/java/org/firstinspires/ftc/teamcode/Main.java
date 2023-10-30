@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 public class Main {
 
     public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
-    public Servo inServo, wrist, drone, Rclaw, Lclaw;
+    public Servo inServo, wrist, drone, Uclaw, Lclaw;
     public CRServo arm1, arm2;
     private HardwareMap hardwareMap;
 
@@ -73,9 +73,9 @@ public class Main {
         scheduler.registerSubsystem(intakeSubsystem);
 
         //claw subsystem
-        Rclaw = hardwareMap.get(Servo.class, "Rclaw");
+        Uclaw = hardwareMap.get(Servo.class, "Uclaw");
         Lclaw = hardwareMap.get(Servo.class, "Lclaw");
-        clawSubsystem = new ClawSubsystem(Rclaw, Lclaw);
+        clawSubsystem = new ClawSubsystem(Uclaw, Lclaw);
         scheduler.registerSubsystem(clawSubsystem);
 
         //climb subsysem
@@ -84,8 +84,8 @@ public class Main {
         scheduler.registerSubsystem(climbSubsystem);
 
         //arm subsysem
-        arm1 = hardwareMap.get(CRServo.class, "arm1");
-        arm2 = hardwareMap.get(CRServo.class, "arm2");
+        arm1 = hardwareMap.get(CRServo.class, "Rarm");
+        arm2 = hardwareMap.get(CRServo.class, "Larm");
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
         wrist = hardwareMap.get(Servo.class, "wrist");

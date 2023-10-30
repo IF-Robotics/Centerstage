@@ -83,7 +83,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
         double x = gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
+        double rx = Math.sqrt(Math.pow(gamepad1.right_stick_x,2) * Math.pow(gamepad1.right_stick_y,2));
 
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
