@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,6 +16,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     private DcMotorEx BL, BR, FL, FR;
     private Telemetry telemetry;
+    private MecanumDrive mecanum;
 
     public enum Direction {
         left,
@@ -26,7 +28,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Direction dir = Direction.forward;
 
     private double power = 0;
-    private DcMotor.RunMode runMode = DcMotor.RunMode.RUN_USING_ENCODER;
+    private DcMotor.RunMode runMode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
     private IMU imu;
 
     public DriveSubsystem(DcMotorEx BL, DcMotorEx BR, DcMotorEx FL, DcMotorEx FR, IMU imu, Telemetry telemetry) {
@@ -36,6 +38,8 @@ public class DriveSubsystem extends SubsystemBase {
         this.FR = FR;
         this.imu = imu;
         this.telemetry = telemetry;
+
+//        mecanum = new MecanumDrive(FL, FR, BL, BR);
 
         BL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         BR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -61,12 +65,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void teleDrive(Gamepad gamepad1, double power) {
-        double LY = (double) gamepad1.left_stick_y;
-        double LX = (double) gamepad1.left_stick_x;
-        double RY = (double) gamepad1.right_stick_y;
-        BR.setDirection(DcMotorSimple.Direction.REVERSE);
-        FR.setDirection(DcMotorSimple.Direction.REVERSE);
-        setAllPower(
+        double LY = gamepad1.left_stick_y;
+        double LX = gamepad1.left_stick_x;
+        double RY = gamepad1.right_stick_y;
+        setAllPower( //LY + LX, RY - LX, LY - LX, RY + LX
                 power * (LY + LX),
                 power * (RY - LX),
                 power * (LY - LX),
@@ -146,6 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         telemetry.addData("drive amps", BL.getCurrent(CurrentUnit.AMPS) + BR.getCurrent(CurrentUnit.AMPS) + FL.getCurrent(CurrentUnit.AMPS) + FR.getCurrent(CurrentUnit.AMPS));
+        telemetry.update();
     }
 }
 
