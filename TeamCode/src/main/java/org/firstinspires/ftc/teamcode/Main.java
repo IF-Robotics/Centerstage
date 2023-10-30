@@ -73,11 +73,11 @@ public class Main {
         scheduler.registerSubsystem(intakeSubsystem);
 
         //claw subsystem
-<<<<<<< Updated upstream
+
         Uclaw = hardwareMap.get(Servo.class, "Uclaw");
-=======
-        Rclaw = hardwareMap.get(Servo.class, "Uclaw");
->>>>>>> Stashed changes
+
+        Lclaw = hardwareMap.get(Servo.class, "Uclaw");
+
         Lclaw = hardwareMap.get(Servo.class, "Lclaw");
         clawSubsystem = new ClawSubsystem(Uclaw, Lclaw);
         scheduler.registerSubsystem(clawSubsystem);
