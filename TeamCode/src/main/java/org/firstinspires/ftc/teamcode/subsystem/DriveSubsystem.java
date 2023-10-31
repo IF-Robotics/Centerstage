@@ -148,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         telemetry.addData("drive amps", BL.getCurrent(CurrentUnit.AMPS) + BR.getCurrent(CurrentUnit.AMPS) + FL.getCurrent(CurrentUnit.AMPS) + FR.getCurrent(CurrentUnit.AMPS));
-        telemetry.update();
+//        telemetry.update();
     }
 }
 
