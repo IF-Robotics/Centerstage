@@ -41,7 +41,7 @@ public class ClimbSubsystem extends SubsystemBase {
     public void periodic() {
         //TODO: add stuff so that slides don't overreach up or down
         telemetry.addData("Climb", getPosition());
-        telemetry.update();
+//        telemetry.update();
 
         if(getPosition() > MAX) {
             power = Math.min(0, power);

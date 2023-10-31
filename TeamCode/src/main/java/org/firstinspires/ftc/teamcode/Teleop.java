@@ -30,9 +30,9 @@ import org.firstinspires.ftc.teamcode.command.TransferPixelCommand;
 public class Teleop extends CommandOpMode {
     private TeledriveCommand mecanumCommand;
     private ReadyScoreCommand readyScore;
-    private Command intakeDown, intakeUp, shootPlane, resetIMU, climbUp, climbDown, climbDefault;
+    private Command intakeDown, intakeUp, toggleClaw, shootPlane, resetIMU, climbUp, climbDown, climbDefault;
     CommandScheduler scheduler = CommandScheduler.getInstance();
-    private Button up, down, a1, x2, lb2, rb2;
+    private Button up, down, a1, a2, x2, y2, lb2, rb2;
     private Trigger rt2;
     private GamepadEx gpad2;
     private GamepadEx gpad1;
@@ -55,14 +55,16 @@ public class Teleop extends CommandOpMode {
 //        robot.climbSubsystem.setDefaultCommand(climbDefault);
 
         //1 button for intake: spins & lowers intake, then when released it outtakes and comes up again
-        x2.whenPressed(intakeDown);
-        x2.whenReleased(intakeUp);
+        a2.whenPressed(intakeDown);
+        a2.whenReleased(intakeUp);
+        //claw toggle
+        y2.whenPressed(toggleClaw);
 
         //reset IMU
         a1.whenPressed(resetIMU);
 
         //climb
-        rb2.whileHeld(climbUp);
+        rb2.whenHeld(climbUp);
         rb2.whenReleased(climbDown);
         rt2.whileActiveContinuous(climbDefault);
 
@@ -97,6 +99,7 @@ public class Teleop extends CommandOpMode {
             robot.intakeSubsystem.setPower(1);}, robot.intakeSubsystem);
         intakeUp = new InstantCommand(() -> {robot.intakeSubsystem.setPosition(robot.intakeSubsystem.up); robot.intakeSubsystem.setPower(0);},
             robot.intakeSubsystem);
+        toggleClaw = new InstantCommand(()-> robot.clawSubsystem.toggle(), robot.clawSubsystem);
         shootPlane = new InstantCommand(() -> {robot.airplaneSubsystem.setPosition(robot.airplaneSubsystem.shoot);}, robot.airplaneSubsystem);
         transfer = new TransferPixelCommand(robot.intakeSubsystem, robot.armSubsystem, robot.clawSubsystem, telemetry);
         resetIMU = new InstantCommand(() -> robot.driveSubsystem.resetIMU());
@@ -109,7 +112,9 @@ public class Teleop extends CommandOpMode {
         up = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_UP);
         down = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_DOWN);
         a1 = new GamepadButton(gpad1, GamepadKeys.Button.A);
+        a2 = new GamepadButton(gpad2, GamepadKeys.Button.A);
         x2 = new GamepadButton(gpad2, GamepadKeys.Button.X);
+        y2 = new GamepadButton(gpad2, GamepadKeys.Button.Y);
         lb2 = new GamepadButton(gpad2, GamepadKeys.Button.LEFT_BUMPER);
         rb2 = new GamepadButton(gpad2, GamepadKeys.Button.RIGHT_BUMPER);
         rt2 = new Trigger(() -> (gamepad2.right_trigger > .3));

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -22,6 +23,7 @@ public class Main {
     public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
     public Servo inServo, wrist, drone, Uclaw, Lclaw;
     public CRServo arm1, arm2;
+    AnalogInput analogInput;
     private HardwareMap hardwareMap;
 
     public DriveSubsystem driveSubsystem;
@@ -75,11 +77,8 @@ public class Main {
         //claw subsystem
 
         Uclaw = hardwareMap.get(Servo.class, "Uclaw");
-
-        Lclaw = hardwareMap.get(Servo.class, "Uclaw");
-
         Lclaw = hardwareMap.get(Servo.class, "Lclaw");
-        clawSubsystem = new ClawSubsystem(Uclaw, Lclaw);
+        clawSubsystem = new ClawSubsystem(Uclaw, Lclaw, telemetry);
         scheduler.registerSubsystem(clawSubsystem);
 
         //climb subsysem
@@ -90,10 +89,11 @@ public class Main {
         //arm subsysem
         arm1 = hardwareMap.get(CRServo.class, "Rarm");
         arm2 = hardwareMap.get(CRServo.class, "Larm");
+        analogInput = hardwareMap.get(AnalogInput.class, "armAnalog");
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
         wrist = hardwareMap.get(Servo.class, "wrist");
-        armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, wrist);
+        armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, analogInput, wrist);
         scheduler.registerSubsystem(armSubsystem);
 
         //airplane subsystem
