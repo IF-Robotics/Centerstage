@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -89,11 +90,12 @@ public class Main {
         //arm subsysem
         arm1 = hardwareMap.get(CRServo.class, "Rarm");
         arm2 = hardwareMap.get(CRServo.class, "Larm");
+        ArmSubsystem.controller = new PIDController(ArmSubsystem.kp, ArmSubsystem.ki, ArmSubsystem.kd);
         analogInput = hardwareMap.get(AnalogInput.class, "armAnalog");
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
         wrist = hardwareMap.get(Servo.class, "wrist");
-        armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, analogInput, wrist);
+        armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, analogInput, wrist, telemetry);
         scheduler.registerSubsystem(armSubsystem);
 
         //airplane subsystem
