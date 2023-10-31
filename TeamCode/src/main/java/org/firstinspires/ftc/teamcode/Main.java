@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 
 public class Main {
 
-    public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
+    private DcMotorEx BL, BR, FL, FR, slide1, slide2, inMotor, climb;
     public Servo inServo, wrist, drone, Uclaw, Lclaw;
     public CRServo arm1, arm2;
     AnalogInput analogInput;
@@ -93,7 +94,7 @@ public class Main {
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
         wrist = hardwareMap.get(Servo.class, "wrist");
-        armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, analogInput, wrist);
+        armSubsystem = new ArmSubsystem(slide1, slide2, arm1, arm2, analogInput, wrist, telemetry);
         scheduler.registerSubsystem(armSubsystem);
 
         //airplane subsystem
