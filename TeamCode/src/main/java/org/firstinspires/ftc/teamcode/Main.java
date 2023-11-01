@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
-
 import com.arcrobotics.ftclib.controller.PIDController;
-
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -24,7 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 
 public class Main {
 
-    private DcMotorEx BL, BR, FL, FR, slide1, slide2, inMotor, climb;
+    public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
     public Servo inServo, wrist, drone, Uclaw, Lclaw;
     public CRServo arm1, arm2;
     AnalogInput analogInput;

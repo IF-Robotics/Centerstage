@@ -13,7 +13,7 @@ public class ArmDefaultCommand extends CommandBase {
     @Override
     public void initialize() {
         ArmSubsystem.dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
 
 
     }

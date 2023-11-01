@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
@@ -26,14 +27,15 @@ import org.firstinspires.ftc.teamcode.command.ReadyScoreCommand;
 import org.firstinspires.ftc.teamcode.command.TeledriveCommand;
 import org.firstinspires.ftc.teamcode.command.TransferPixelCommand;
 
+@Config
 @TeleOp
 public class Teleop extends CommandOpMode {
     private TeledriveCommand mecanumCommand;
     private ReadyScoreCommand readyScore;
-    private Command intakeDown, intakeUp, toggleClaw, shootPlane, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
+    private Command intakeDown, intakeUp, toggleClaw, shootPlane, resetIMU, climbUp, climbDown, climbDefault;
     CommandScheduler scheduler = CommandScheduler.getInstance();
     private Button up, down, a1, a2, x2, y2, lb2, rb2;
-    private Trigger lt2, rt2;
+    private Trigger rt2;
     private GamepadEx gpad2;
     private GamepadEx gpad1;
     private TransferPixelCommand transfer;
@@ -57,10 +59,6 @@ public class Teleop extends CommandOpMode {
         //1 button for intake: spins & lowers intake, then when released it outtakes and comes up again
         a2.whenPressed(intakeDown);
         a2.whenReleased(intakeUp);
-
-        //slides
-        lt2.whileActiveContinuous(manualSlide);
-
         //claw toggle
         y2.whenPressed(toggleClaw);
 
@@ -74,8 +72,8 @@ public class Teleop extends CommandOpMode {
 
         //rumble for endgame
         if(getRuntime() > 90) {
-            gamepad2.rumble(1);
-            gamepad1.rumble(1);
+            gamepad2.rumble(1000);
+            gamepad1.rumble(1000);
         }
 
         //button for picking up pixels and setting up for scoring
@@ -105,7 +103,6 @@ public class Teleop extends CommandOpMode {
             robot.intakeSubsystem);
         toggleClaw = new InstantCommand(()-> robot.clawSubsystem.toggle(), robot.clawSubsystem);
         shootPlane = new InstantCommand(() -> {robot.airplaneSubsystem.setPosition(robot.airplaneSubsystem.shoot);}, robot.airplaneSubsystem);
-        manualSlide = new InstantCommand(() -> {robot.armSubsystem.addSlidePosition( (int) (-10 * gamepad2.left_stick_y));});
         transfer = new TransferPixelCommand(robot.intakeSubsystem, robot.armSubsystem, robot.clawSubsystem, telemetry);
         resetIMU = new InstantCommand(() -> robot.driveSubsystem.resetIMU());
         climbDefault = new RunCommand(() -> robot.climbSubsystem.setPower(1, gamepad2), robot.climbSubsystem);
@@ -122,7 +119,6 @@ public class Teleop extends CommandOpMode {
         y2 = new GamepadButton(gpad2, GamepadKeys.Button.Y);
         lb2 = new GamepadButton(gpad2, GamepadKeys.Button.LEFT_BUMPER);
         rb2 = new GamepadButton(gpad2, GamepadKeys.Button.RIGHT_BUMPER);
-        lt2 = new Trigger(() -> (gamepad2.left_trigger > .3));
         rt2 = new Trigger(() -> (gamepad2.right_trigger > .3));
     }
 }
