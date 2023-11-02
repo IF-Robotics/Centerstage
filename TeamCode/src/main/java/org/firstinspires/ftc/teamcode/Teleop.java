@@ -11,16 +11,10 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.command.ArmDownCommand;
+import org.firstinspires.ftc.teamcode.command.ArmUpCommand;
 import org.firstinspires.ftc.teamcode.command.ClimbDownCommand;
 import org.firstinspires.ftc.teamcode.command.ClimbUpCommand;
 import org.firstinspires.ftc.teamcode.command.ReadyScoreCommand;
@@ -32,10 +26,11 @@ import org.firstinspires.ftc.teamcode.command.TransferPixelCommand;
 public class Teleop extends CommandOpMode {
     private TeledriveCommand mecanumCommand;
     private ReadyScoreCommand readyScore;
-    private Command intakeDown, intakeUp, toggleClaw, shootPlane, resetIMU, climbUp, climbDown, climbDefault;
+    private ArmDownCommand armDown;
+    private Command intakeDown, intakeUp, toggleClaw, armUp, shootPlane, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
     CommandScheduler scheduler = CommandScheduler.getInstance();
-    private Button up, down, a1, a2, x2, y2, lb2, rb2;
-    private Trigger rt2;
+    private Button up2, down2, a1, a2, x2, y2, lb2, rb2;
+    private Trigger lt2, rt2;
     private GamepadEx gpad2;
     private GamepadEx gpad1;
     private TransferPixelCommand transfer;
@@ -62,11 +57,18 @@ public class Teleop extends CommandOpMode {
         //claw toggle
         y2.whenPressed(toggleClaw);
 
+        //slides
+        lt2.whileActiveContinuous(manualSlide);
+
+        //arm
+        up2.whenPressed(armUp);
+        down2.whenPressed(armDown);
+
         //reset IMU
         a1.whenPressed(resetIMU);
 
         //climb
-        rb2.whenHeld(climbUp);
+        rb2.whileHeld(climbUp);
         rb2.whenReleased(climbDown);
         rt2.whileActiveContinuous(climbDefault);
 
@@ -102,7 +104,10 @@ public class Teleop extends CommandOpMode {
         intakeUp = new InstantCommand(() -> {robot.intakeSubsystem.setPosition(robot.intakeSubsystem.up); robot.intakeSubsystem.setPower(0);},
             robot.intakeSubsystem);
         toggleClaw = new InstantCommand(()-> robot.clawSubsystem.toggle(), robot.clawSubsystem);
+        armUp = new ArmUpCommand(robot.armSubsystem, 245, 290, .55, 500);
+        armDown = new ArmDownCommand(robot.armSubsystem, 0, 90, .87, 500);
         shootPlane = new InstantCommand(() -> {robot.airplaneSubsystem.setPosition(robot.airplaneSubsystem.shoot);}, robot.airplaneSubsystem);
+        manualSlide = new InstantCommand(() -> {robot.armSubsystem.addSlidePosition( (int) (-10 * gamepad2.left_stick_y));});
         transfer = new TransferPixelCommand(robot.intakeSubsystem, robot.armSubsystem, robot.clawSubsystem, telemetry);
         resetIMU = new InstantCommand(() -> robot.driveSubsystem.resetIMU());
         climbDefault = new RunCommand(() -> robot.climbSubsystem.setPower(1, gamepad2), robot.climbSubsystem);
@@ -111,14 +116,15 @@ public class Teleop extends CommandOpMode {
     }
 
     public void configureButtons() {
-        up = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_UP);
-        down = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_DOWN);
+        up2 = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_UP);
+        down2 = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_DOWN);
         a1 = new GamepadButton(gpad1, GamepadKeys.Button.A);
         a2 = new GamepadButton(gpad2, GamepadKeys.Button.A);
         x2 = new GamepadButton(gpad2, GamepadKeys.Button.X);
         y2 = new GamepadButton(gpad2, GamepadKeys.Button.Y);
         lb2 = new GamepadButton(gpad2, GamepadKeys.Button.LEFT_BUMPER);
         rb2 = new GamepadButton(gpad2, GamepadKeys.Button.RIGHT_BUMPER);
+        lt2 = new Trigger(() -> (gamepad2.left_trigger > .3));
         rt2 = new Trigger(() -> (gamepad2.right_trigger > .3));
     }
 }

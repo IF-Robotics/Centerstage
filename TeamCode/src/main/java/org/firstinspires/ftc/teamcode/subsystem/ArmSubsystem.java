@@ -7,11 +7,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PController;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.ServoEx;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -23,16 +25,16 @@ public class ArmSubsystem extends SubsystemBase {
     private CRServo arm1, arm2;
     private Servo wrist;
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
-    private double slidePower;
+    private PController slideController = new PController(.01);
+    private double slidePower = .6;
+    private int slidePosition;
     private AnalogInput armInput;
     public static double kp = .025, ki = 0.05, kd = 0.001;
     public static double kf = 0;
     public static PIDController controller;
 
     public static FtcDashboard dashboard;
-
-
-    public static int target = 218;
+    public static int target = 180;
     private Telemetry telemetry;
 
     public ArmSubsystem(DcMotorEx slide1, DcMotorEx slide2, CRServo arm1, CRServo arm2, AnalogInput input, Servo wrist, Telemetry telemetry) {
@@ -40,21 +42,37 @@ public class ArmSubsystem extends SubsystemBase {
         this.slide2 = slide2;
         this.arm1 = arm1;
         arm1.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.arm2 = arm2;
         this.armInput = input;
         this.wrist = wrist;
         this.telemetry = telemetry;
     }
 
+    public void setArm(int target) {
+        this.target = target;
+    }
+
+    public void setSlidePosition(int slidePosition) {
+        this.slidePosition = slidePosition;
+    }
+
+    public void addSlidePosition(int add) {
+        slidePosition +=  add;
+    }
     public void setSlidePower(double power) {
         slidePower = power;
     }
 
-    public void setArmPosition(double setpoint) {
-        this.setpoint = (int) setpoint;
-    }
+    //depreciatied
+//    public void setArmPosition(double setpoint) {
+//        this.setpoint = (int) setpoint;
+//    }
 
     public void setWrist(double position) {
+//        double adjPos = Math.min(.7, position);
         wrist.setPosition(position);
     }
 
@@ -62,13 +80,17 @@ public class ArmSubsystem extends SubsystemBase {
     public void periodic() {
         //TODO: make slide not reach too far, and also resets
         //do we reset every time we get to the bottom or not? non-limit switch button?
+        slidePower = slideController.calculate(slide1.getCurrentPosition(), slidePosition);
+        if(slide1.getCurrentPosition() < 10) {
+            slidePower = Math.max(0, slidePower);
+        }
         slide1.setPower(slidePower);
         slide2.setPower(slidePower);
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = dashboard.getTelemetry();
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        FtcDashboard dashboard = FtcDashboard.getInstance();
+//        telemetry = dashboard.getTelemetry();
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         //TODO: add pidf for arm servos
-        position = (int) (armInput.getVoltage() / 3.3 * 360);
+        position = (int) (armInput.getVoltage() * (360 / 3.3));
         controller.setPID(kp, ki, kd);
         double pid = controller.calculate(position, target);
         double ff = Math.cos(target-128) * kf;

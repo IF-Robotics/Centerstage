@@ -22,7 +22,6 @@ public class ClimbUpCommand extends CommandBase {
     }
 
     @Override
-    public void end(boolean interrupted) {
-        climb.setPower(0);
+    public void end(boolean interrupted) {;
     }
 }

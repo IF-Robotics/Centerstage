@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class ClawSubsystem extends SubsystemBase {
     private Servo upper, lower;
     public double openL = .65, closeL = .45, openU = .35, closeU = .5;
-    private boolean isGoalOpen = true, isOpenRn = true;
+    private boolean isGoalOpen = false, isOpenRn = false;
     private Telemetry telemetry;
     //lower is .45 for close and .65 for open
     //upper is .5 for open and .35 for close
@@ -16,8 +16,8 @@ public class ClawSubsystem extends SubsystemBase {
     public ClawSubsystem(Servo upper, Servo lower, Telemetry telemetry) {
         this.upper = upper;
         this.lower = lower;
-        setLower(openL);
-        setUpper(openU);
+        setLower(closeL);
+        setUpper(closeU);
         this.telemetry = telemetry;
     }
 
