@@ -55,6 +55,7 @@ public class CameraTest extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()) {
             sleep(20);
+            telemetry.addData("position", aPipe.getPosition());
             telemetry.addData("x-value", aPipe.getX());
             telemetry.addData("y-value", aPipe.getY());
             telemetry.addData("max area", aPipe.getMaxContour());

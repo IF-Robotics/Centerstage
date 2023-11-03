@@ -23,6 +23,10 @@ public class PropPipeline extends OpenCvPipeline {
         Mat tresh = new Mat();
         Mat hierarchy = new Mat();
         Scalar color = new Scalar(0,255,0);
+
+        int xvalue = -100;
+        public enum Position {left, right, center, unknown};
+        private Position position = PropPipeline.Position.unknown;
         int pos = 0;
         double maxArea = 0;
         double maxWidth = 0;
@@ -55,7 +59,7 @@ public class PropPipeline extends OpenCvPipeline {
             // so half the precision of a normal color wheel for hue,
             // then saturation and value go to 255,
             // you need to convert the normal 0-100 to 0-255
-            Core.inRange(hsv, new Scalar(140,0*255/100,40*255/100), new Scalar(180,20*255/100,100*255/100), tresh);
+            Core.inRange(hsv, new Scalar(120,0*255/100,40*255/100), new Scalar(180,20*255/100,100*255/100), tresh);
 //            Core.inRange(hsv, new Scalar(120,0,80), new Scalar(180,60,140), tresh);
 
             Imgproc.findContours(tresh, contours, hierarchy, Imgproc.RETR_TREE
@@ -125,7 +129,8 @@ public class PropPipeline extends OpenCvPipeline {
                 try {
                     MatOfPoint2f thing = new MatOfPoint2f(maxContour.toArray());
                     RotatedRect rect = Imgproc.minAreaRect(thing);
-                    return rect.boundingRect().x;
+                    xvalue = rect.boundingRect().x;
+                    return xvalue;
                 }
                 catch (Exception e) {
                     return 69;
@@ -133,6 +138,17 @@ public class PropPipeline extends OpenCvPipeline {
             }
             return -404;
         }
+
+        public Position getPosition() {
+            if(xvalue > 320) {
+                return Position.right;
+            } else if(xvalue > 80) {
+                return Position.center;
+            } else {
+                return Position.left;
+            }
+        }
+
         public int getY() {
             if(maxContour!=null&& !maxContour.empty()) {
                 try {
