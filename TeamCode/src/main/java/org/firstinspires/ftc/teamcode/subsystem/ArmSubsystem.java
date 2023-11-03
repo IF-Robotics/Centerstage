@@ -22,8 +22,10 @@ import org.checkerframework.checker.units.qual.degrees;
 @Config
 public class ArmSubsystem extends SubsystemBase {
     private DcMotorEx slide1, slide2;
-    private CRServo arm1, arm2;
+    private Servo arm1, arm2;
+    public double armDown = .88, armUp = .18, armGround, armNeutral = .75, armFlip = .89;
     private Servo wrist;
+    public double wristUp = .48, wristDown = .8, wristGround, wristNeutral, wristFlip = .17;
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
     private PController slideController = new PController(.01);
     private double slidePower = .6;
@@ -37,11 +39,10 @@ public class ArmSubsystem extends SubsystemBase {
     public static int target = 180;
     private Telemetry telemetry;
 
-    public ArmSubsystem(DcMotorEx slide1, DcMotorEx slide2, CRServo arm1, CRServo arm2, AnalogInput input, Servo wrist, Telemetry telemetry) {
+    public ArmSubsystem(DcMotorEx slide1, DcMotorEx slide2, Servo arm1, Servo arm2, AnalogInput input, Servo wrist, Telemetry telemetry) {
         this.slide1 = slide1;
         this.slide2 = slide2;
         this.arm1 = arm1;
-        arm1.setDirection(DcMotorSimple.Direction.REVERSE);
         slide2.setDirection(DcMotorSimple.Direction.REVERSE);
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -51,8 +52,9 @@ public class ArmSubsystem extends SubsystemBase {
         this.telemetry = telemetry;
     }
 
-    public void setArm(int target) {
-        this.target = target;
+    public void setArm(double target) {
+        arm1.setPosition(target);
+        arm2.setPosition(target);
     }
 
     public void setSlidePosition(int slidePosition) {
@@ -76,6 +78,10 @@ public class ArmSubsystem extends SubsystemBase {
         wrist.setPosition(position);
     }
 
+    public double getWrist() {
+        return wrist.getPosition();
+    }
+
     @Override
     public void periodic() {
         //TODO: make slide not reach too far, and also resets
@@ -89,23 +95,25 @@ public class ArmSubsystem extends SubsystemBase {
 //        FtcDashboard dashboard = FtcDashboard.getInstance();
 //        telemetry = dashboard.getTelemetry();
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-        //TODO: add pidf for arm servos
-        position = (int) (armInput.getVoltage() * (360 / 3.3));
-        controller.setPID(kp, ki, kd);
-        double pid = controller.calculate(position, target);
-        double ff = Math.cos(target-128) * kf;
 
-        double power = pid + ff;
-
-        arm1.setPower(power/5.0);
-        arm2.setPower(power/5.0);
+//        //TODO: add pidf for arm servos
+//        position = (int) (armInput.getVoltage() * (360 / 3.3));
+//        controller.setPID(kp, ki, kd);
+//        double pid = controller.calculate(position, target);
+//        double ff = Math.cos(target-128) * kf;
+//
+//        double power = pid + ff;
+//
+//        arm1.setPower(power/5.0);
+//        arm2.setPower(power/5.0);
 
 
         telemetry.addData("pos", position);
         telemetry.addData("target", target);
-        telemetry.addData("power", power);
-        telemetry.addData("f", ff);
-        telemetry.addData("arm power",arm1.getPower());
+        /*telemetry.addData("power", power);
+        telemetry.addData("f", ff);*/
+        telemetry.addData("arm power",arm1.getPosition());
+        telemetry.addData("wrist", wrist.getPosition());
         telemetry.update();
     }
 }

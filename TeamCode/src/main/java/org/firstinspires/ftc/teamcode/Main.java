@@ -23,7 +23,7 @@ public class Main {
 
     public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
     public Servo inServo, wrist, drone, Uclaw, Lclaw;
-    public CRServo arm1, arm2;
+    public Servo arm1, arm2;
     AnalogInput analogInput;
     private HardwareMap hardwareMap;
 
@@ -88,8 +88,8 @@ public class Main {
         scheduler.registerSubsystem(climbSubsystem);
 
         //arm subsysem
-        arm1 = hardwareMap.get(CRServo.class, "Rarm");
-        arm2 = hardwareMap.get(CRServo.class, "Larm");
+        arm1 = hardwareMap.get(Servo.class, "Rarm");
+        arm2 = hardwareMap.get(Servo.class, "Larm");
         ArmSubsystem.controller = new PIDController(ArmSubsystem.kp, ArmSubsystem.ki, ArmSubsystem.kd);
         analogInput = hardwareMap.get(AnalogInput.class, "armAnalog");
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");

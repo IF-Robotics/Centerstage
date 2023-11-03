@@ -14,9 +14,11 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.command.ArmDownCommand;
+import org.firstinspires.ftc.teamcode.command.ArmFlipCommand;
 import org.firstinspires.ftc.teamcode.command.ArmUpCommand;
 import org.firstinspires.ftc.teamcode.command.ClimbDownCommand;
 import org.firstinspires.ftc.teamcode.command.ClimbUpCommand;
+import org.firstinspires.ftc.teamcode.command.IntakeUpCommand;
 import org.firstinspires.ftc.teamcode.command.ReadyScoreCommand;
 import org.firstinspires.ftc.teamcode.command.TeledriveCommand;
 import org.firstinspires.ftc.teamcode.command.TransferPixelCommand;
@@ -27,7 +29,7 @@ public class Teleop extends CommandOpMode {
     private TeledriveCommand mecanumCommand;
     private ReadyScoreCommand readyScore;
     private ArmDownCommand armDown;
-    private Command intakeDown, intakeUp, toggleClaw, armUp, shootPlane, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
+    private Command intakeDown, intakeUp, toggleClaw, armUp, shootPlane, flipCommand, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
     CommandScheduler scheduler = CommandScheduler.getInstance();
     private Button up2, down2, a1, a2, x2, y2, lb2, rb2;
     private Trigger lt2, rt2;
@@ -63,6 +65,8 @@ public class Teleop extends CommandOpMode {
         //arm
         up2.whenPressed(armUp);
         down2.whenPressed(armDown);
+        x2.whenPressed(flipCommand);
+        telemetry.addData("arm Command", robot.armSubsystem.getCurrentCommand());
 
         //reset IMU
         a1.whenPressed(resetIMU);
@@ -73,7 +77,7 @@ public class Teleop extends CommandOpMode {
         rt2.whileActiveContinuous(climbDefault);
 
         //rumble for endgame
-        if(getRuntime() > 90) {
+        if(getRuntime() >  80 && getRuntime() < 81) {
             gamepad2.rumble(1000);
             gamepad1.rumble(1000);
         }
@@ -101,11 +105,11 @@ public class Teleop extends CommandOpMode {
         mecanumCommand = new TeledriveCommand(robot.driveSubsystem, hardwareMap, gamepad1);
         intakeDown = new InstantCommand(() -> { robot.intakeSubsystem.setPosition(robot.intakeSubsystem.down);
             robot.intakeSubsystem.setPower(1);}, robot.intakeSubsystem);
-        intakeUp = new InstantCommand(() -> {robot.intakeSubsystem.setPosition(robot.intakeSubsystem.up); robot.intakeSubsystem.setPower(0);},
-            robot.intakeSubsystem);
+        intakeUp = new IntakeUpCommand(robot.intakeSubsystem);
         toggleClaw = new InstantCommand(()-> robot.clawSubsystem.toggle(), robot.clawSubsystem);
-        armUp = new ArmUpCommand(robot.armSubsystem, 245, 290, .55, 500);
-        armDown = new ArmDownCommand(robot.armSubsystem, 0, 90, .87, 500);
+        armUp = new ArmUpCommand(robot.armSubsystem, 245, robot.armSubsystem.armUp, robot.armSubsystem.wristUp, 200);
+        armDown = new ArmDownCommand(robot.armSubsystem, 0, robot.armSubsystem.armDown, robot.armSubsystem.wristDown, 200);
+        flipCommand = new ArmFlipCommand(robot.armSubsystem, telemetry);
         shootPlane = new InstantCommand(() -> {robot.airplaneSubsystem.setPosition(robot.airplaneSubsystem.shoot);}, robot.airplaneSubsystem);
         manualSlide = new InstantCommand(() -> {robot.armSubsystem.addSlidePosition( (int) (-10 * gamepad2.left_stick_y));});
         transfer = new TransferPixelCommand(robot.intakeSubsystem, robot.armSubsystem, robot.clawSubsystem, telemetry);
