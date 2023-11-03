@@ -12,17 +12,22 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.subsystem.AirplaneSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.ArmSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.ClimbSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 public class Main {
 
     public DcMotorEx BL, BR, FL, FR, inMotor, slide1, slide2, climb;
     public Servo inServo, wrist, drone, Uclaw, Lclaw;
+    public PropPipeline aPipe;
     public Servo arm1, arm2;
     AnalogInput analogInput;
     private HardwareMap hardwareMap;
@@ -39,7 +44,7 @@ public class Main {
         if(/*mode == Opmode.Teleop*/ mode == "tele") {
             initTele(telemetry);
         } else {
-            initAuto();
+            initAuto(telemetry);
         }
     }
 
@@ -102,11 +107,23 @@ public class Main {
         drone = hardwareMap.get(Servo.class, "plane");
         airplaneSubsystem = new AirplaneSubsystem(drone, telemetry);
         scheduler.registerSubsystem(airplaneSubsystem);
-
-        scheduler.run(); //does this need to be here?
     }
 
-    private void initAuto() {
-        CommandScheduler schduler = CommandScheduler.getInstance();
+    private void initAuto(Telemetry telemetry) {
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        WebcamName AName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        OpenCvCamera autoCam = OpenCvCameraFactory.getInstance().createWebcam(AName, cameraMonitorViewId);
+        autoCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                autoCam.startStreaming(640, 480, OpenCvCameraRotation.UPRIGHT);
+            }
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
+        this.aPipe = new PropPipeline();
+        autoCam.setPipeline(aPipe);
+        initTele(telemetry);
     }
 }
