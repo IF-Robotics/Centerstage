@@ -93,7 +93,7 @@ public class ArmSubsystem extends SubsystemBase {
         position = (int) (armInput.getVoltage() * (360 / 3.3));
         controller.setPID(kp, ki, kd);
         double pid = controller.calculate(position, target);
-        double ff = Math.cos(target-128) * kf;
+        double ff = Math.cos(218-target) * kf;
 
         double power = pid + ff;
 
