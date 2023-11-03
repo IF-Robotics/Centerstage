@@ -107,7 +107,7 @@ public class DriveSubsystem extends SubsystemBase {
         double x = 1.3 * gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - (Math.PI / 2.0);
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -132,7 +132,7 @@ public class DriveSubsystem extends SubsystemBase {
         return true;
     }
 
-    private void setAllPower(double BL, double BR, double FL, double FR, double power) {
+    public void setAllPower(double BL, double BR, double FL, double FR, double power) {
         this.BL.setPower(power * BL);
         this.BR.setPower(power * BR);
         this.FL.setPower(power * FL);

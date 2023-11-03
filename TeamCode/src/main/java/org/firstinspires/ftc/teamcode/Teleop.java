@@ -29,9 +29,9 @@ public class Teleop extends CommandOpMode {
     private TeledriveCommand mecanumCommand;
     private ReadyScoreCommand readyScore;
     private ArmDownCommand armDown;
-    private Command intakeDown, intakeUp, toggleClaw, armUp, shootPlane, flipCommand, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
+    private Command intakeDown, intakeUp, toggleClaw, closeLower, closeUpper, armUp, shootPlane, flipCommand, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
     CommandScheduler scheduler = CommandScheduler.getInstance();
-    private Button up2, down2, a1, a2, x2, y2, lb2, rb2;
+    private Button up2, down2, a1, a2, x2, y2, lb2, rb2, l2, r2;
     private Trigger lt2, rt2;
     private GamepadEx gpad2;
     private GamepadEx gpad1;
@@ -57,7 +57,9 @@ public class Teleop extends CommandOpMode {
         a2.whenPressed(intakeDown);
         a2.whenReleased(intakeUp);
         //claw toggle
-        y2.whenPressed(toggleClaw);
+        y2.whenHeld(toggleClaw);
+        l2.whenHeld(closeLower);
+        r2.whenHeld(closeUpper);
 
         //slides
         lt2.whileActiveContinuous(manualSlide);
@@ -107,8 +109,10 @@ public class Teleop extends CommandOpMode {
             robot.intakeSubsystem.setPower(1);}, robot.intakeSubsystem);
         intakeUp = new IntakeUpCommand(robot.intakeSubsystem);
         toggleClaw = new InstantCommand(()-> robot.clawSubsystem.toggle(), robot.clawSubsystem);
+        closeLower = new InstantCommand(()-> robot.clawSubsystem.setLower(robot.clawSubsystem.closeL));
+        closeUpper = new InstantCommand(()-> robot.clawSubsystem.setUpper(robot.clawSubsystem.closeU));
         armUp = new ArmUpCommand(robot.armSubsystem, 245, robot.armSubsystem.armUp, robot.armSubsystem.wristUp, 200);
-        armDown = new ArmDownCommand(robot.armSubsystem, 0, robot.armSubsystem.armFlip, robot.armSubsystem.wristFlip, 0);
+        armDown = new ArmDownCommand(robot.armSubsystem, robot.clawSubsystem, 0, robot.armSubsystem.armFlip, robot.armSubsystem.wristFlip, 600);
         flipCommand = new ArmFlipCommand(robot.armSubsystem, robot.clawSubsystem, telemetry);
         shootPlane = new InstantCommand(() -> {robot.airplaneSubsystem.setPosition(robot.airplaneSubsystem.shoot);}, robot.airplaneSubsystem);
         manualSlide = new InstantCommand(() -> {robot.armSubsystem.addSlidePosition( (int) (-10 * gamepad2.left_stick_y));});
@@ -130,6 +134,8 @@ public class Teleop extends CommandOpMode {
         rb2 = new GamepadButton(gpad2, GamepadKeys.Button.RIGHT_BUMPER);
         lt2 = new Trigger(() -> (gamepad2.left_trigger > .3));
         rt2 = new Trigger(() -> (gamepad2.right_trigger > .3));
+        l2 = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_LEFT);
+        r2 = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_RIGHT);
     }
 }
 
