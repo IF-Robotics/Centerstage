@@ -23,9 +23,9 @@ import org.checkerframework.checker.units.qual.degrees;
 public class ArmSubsystem extends SubsystemBase {
     private DcMotorEx slide1, slide2;
     private Servo arm1, arm2;
-    public double armDown = .88, armUp = .18, armGround, armNeutral = .75, armFlip = .89;
+    public double armDown = .88, armUp = .285, armGround, armNeutral = .75, armFlip = .82;
     private Servo wrist;
-    public double wristUp = .48, wristDown = .8, wristGround, wristNeutral, wristFlip = .17;
+    public double wristUp = .48, wristDown = .8, wristGround, wristNeutral, wristFlip = .35;
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
     private PController slideController = new PController(.01);
     private double slidePower = .6;

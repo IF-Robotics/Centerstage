@@ -108,8 +108,8 @@ public class Teleop extends CommandOpMode {
         intakeUp = new IntakeUpCommand(robot.intakeSubsystem);
         toggleClaw = new InstantCommand(()-> robot.clawSubsystem.toggle(), robot.clawSubsystem);
         armUp = new ArmUpCommand(robot.armSubsystem, 245, robot.armSubsystem.armUp, robot.armSubsystem.wristUp, 200);
-        armDown = new ArmDownCommand(robot.armSubsystem, 0, robot.armSubsystem.armDown, robot.armSubsystem.wristDown, 200);
-        flipCommand = new ArmFlipCommand(robot.armSubsystem, telemetry);
+        armDown = new ArmDownCommand(robot.armSubsystem, 0, robot.armSubsystem.armFlip, robot.armSubsystem.wristFlip, 0);
+        flipCommand = new ArmFlipCommand(robot.armSubsystem, robot.clawSubsystem, telemetry);
         shootPlane = new InstantCommand(() -> {robot.airplaneSubsystem.setPosition(robot.airplaneSubsystem.shoot);}, robot.airplaneSubsystem);
         manualSlide = new InstantCommand(() -> {robot.armSubsystem.addSlidePosition( (int) (-10 * gamepad2.left_stick_y));});
         transfer = new TransferPixelCommand(robot.intakeSubsystem, robot.armSubsystem, robot.clawSubsystem, telemetry);

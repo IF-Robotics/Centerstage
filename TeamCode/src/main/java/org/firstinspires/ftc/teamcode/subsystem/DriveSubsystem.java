@@ -69,25 +69,45 @@ public class DriveSubsystem extends SubsystemBase {
         double LX = gamepad1.left_stick_x;
         double RY = gamepad1.right_stick_y;
         setAllPower( //LY + LX, RY - LX, LY - LX, RY + LX
-                power * (LY + LX),
-                power * (RY - LX),
-                power * (LY - LX),
-                power * (RY + LX)
+                 (LY + LX),
+                (RY - LX),
+                 (LY - LX),
+                (RY + LX), power
         );
     }
 
     //field centric
-    public boolean teleDrive(Gamepad gamepad1, double power, boolean isFieldCentric) {
+    public boolean teleDrive(Gamepad gamepad1, double power, boolean isFieldCentric, boolean isNormal) {
         if(!isFieldCentric) {
-            teleDrive(gamepad1, power);
+            if(!isNormal) {
+                teleDrive(gamepad1, power);
+                return false;
+            }
+            double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
+
+            // Denominator is the largest motor power (absolute value) or 1
+            // This ensures all the powers maintain the same ratio,
+            // but only if at least one is out of the range [-1, 1]
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+
+            FL.setPower(power * frontLeftPower);
+            BL.setPower(power * backLeftPower);
+            FR.setPower(power * frontRightPower);
+            BR.setPower(power * backRightPower);
             return false;
         }
 
         double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-        double x = gamepad1.left_stick_x;
+        double x = 1.3 * gamepad1.left_stick_x;
         double rx = gamepad1.right_stick_x;
 
-        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS) - (Math.PI / 2.0);
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -108,15 +128,15 @@ public class DriveSubsystem extends SubsystemBase {
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.FORWARD);
         FR.setDirection(DcMotorSimple.Direction.FORWARD);
-        setAllPower(backLeftPower, backRightPower, frontLeftPower, frontRightPower);
+        setAllPower(backLeftPower, backRightPower, frontLeftPower, frontRightPower, power);
         return true;
     }
 
-    private void setAllPower(double BL, double BR, double FL, double FR) {
-        this.BL.setPower(BL);
-        this.BR.setPower(BR);
-        this.FL.setPower(FL);
-        this.FR.setPower(FR);
+    private void setAllPower(double BL, double BR, double FL, double FR, double power) {
+        this.BL.setPower(power * BL);
+        this.BR.setPower(power * BR);
+        this.FL.setPower(power * FL);
+        this.FR.setPower(power * FR);
         dir = Direction.auto;
     }
 

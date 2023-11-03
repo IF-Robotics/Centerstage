@@ -5,16 +5,20 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystem.ArmSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.ClawSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 
 public class ArmFlipCommand extends CommandBase {
     ArmSubsystem arm;
+    ClawSubsystem claw;
     ElapsedTime timer = new ElapsedTime();
     boolean isFlipped = false, isWristDown = true;
     Telemetry telemetry;
 
-    public ArmFlipCommand(ArmSubsystem arm, Telemetry telemetry) {
+    public ArmFlipCommand(ArmSubsystem arm, ClawSubsystem claw, Telemetry telemetry) {
         this.arm = arm;
-        addRequirements(arm);
+        this.claw = claw;
+        addRequirements(arm, claw);
         this.telemetry = telemetry;
     }
 
@@ -37,21 +41,29 @@ public class ArmFlipCommand extends CommandBase {
                 isWristDown = true;
             }
         }
-    }
 
-    @Override
-    public boolean isFinished() {
-        return timer.milliseconds() > 600;
-    }
-
-    @Override
-    public void end(boolean isInterrupted) {
-        if(!isInterrupted) {
+        if(timer.milliseconds() > 600) {
             if(isWristDown) {
                 arm.setArm(arm.armDown);
             } else {
                 arm.setArm(arm.armFlip);
             }
+        }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return timer.milliseconds() > 900;
+    }
+
+    @Override
+    public void end(boolean isInterrupted) {
+        if(isWristDown) {
+            claw.setLower(claw.openL);
+            claw.setUpper(claw.openU);
+        } else {
+            claw.setLower(claw.closeL);
+            claw.setUpper(claw.closeU);
         }
     }
 }

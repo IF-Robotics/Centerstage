@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
 
 public class TeledriveCommand extends CommandBase {
     DriveSubsystem driveSubsystem;
-    private double power = .8;
+    private double power = .9;
     private double tempPower = 0;
     private Gamepad gamepad1;
 
@@ -29,11 +29,11 @@ public class TeledriveCommand extends CommandBase {
     public void execute() {
         tempPower = power;
         if(gamepad1.left_bumper) {
-            tempPower = power + .2;
+            tempPower = power - .4;
         } else if(gamepad1.right_bumper) {
-             tempPower = power - .2;
+             tempPower = power - .6;
         }
-        driveSubsystem.teleDrive(gamepad1, tempPower, true);
+        driveSubsystem.teleDrive(gamepad1, tempPower, true, false);
     }
 
     @Override
