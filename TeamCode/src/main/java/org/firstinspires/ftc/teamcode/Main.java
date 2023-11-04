@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -22,6 +23,8 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+
+import java.util.List;
 
 public class Main {
 
@@ -51,6 +54,13 @@ public class Main {
     private void initTele(Telemetry telemetry) {
         CommandScheduler scheduler = CommandScheduler.getInstance();
         scheduler.reset();
+
+        //bulk reads
+        List<LynxModule> allHubs = hardwareMap.getAll(LynxModule.class);
+
+        for (LynxModule hub : allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
 
         //imu
         IMU imu = hardwareMap.get(IMU.class, "imu");
