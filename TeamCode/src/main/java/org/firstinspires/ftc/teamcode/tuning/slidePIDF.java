@@ -18,7 +18,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 
 public class slidePIDF extends LinearOpMode {
 
-    public static double p=0.003, i=0.05, d=0.00001, f=0.004;
+    public static double p=0.003, i=0.1, d=0.0001, f=0.001;
     private PIDFController controller = new PIDFController(p,i,d,f);
     public static int target = 0;
     private DcMotorEx slide1, slide2;
@@ -46,14 +46,16 @@ public class slidePIDF extends LinearOpMode {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
             int slidePos = slide1.getCurrentPosition();
             double pidf = controller.calculate(slidePos, target);
-            if(pidf>=0) {
-                slide1.setPower(pidf);
-                slide2.setPower(pidf);
-            } else {
+            if(target < 50) {
+                slide1.setPower(0);
+                slide2.setPower(0);
+            } else{ p = 0.003;
                 slide1.setPower(pidf);
                 slide2.setPower(pidf);
             }
+
             telemetry.addData("pos", slidePos);
+            telemetry.addData("power", pidf);
             telemetry.addData("target", target);
             telemetry.addData("error", Math.abs(target - slidePos));
             telemetry.update();
