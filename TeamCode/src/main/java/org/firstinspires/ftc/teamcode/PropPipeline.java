@@ -61,6 +61,8 @@ public class PropPipeline extends OpenCvPipeline {
         // you need to convert the normal 0-100 to 0-255
         Core.inRange(hsv, new Scalar(120,0*255/100,40*255/100), new Scalar(180,20*255/100,100*255/100), tresh);
 //            Core.inRange(hsv, new Scalar(120,0,80), new Scalar(180,60,140), tresh);
+//        let low = new cv.Mat(src.rows, src.cols, src.type(), [120, 0, 60*255/100, 0]);
+//        let high = new cv.Mat(src.rows, src.cols, src.type(), [180, 20*255/100, 95*255/100, 255]);
 
         Imgproc.findContours(tresh, contours, hierarchy, Imgproc.RETR_TREE
                 , Imgproc.CHAIN_APPROX_NONE);
