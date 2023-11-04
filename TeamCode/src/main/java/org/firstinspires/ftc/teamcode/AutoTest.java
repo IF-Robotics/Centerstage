@@ -22,6 +22,7 @@ PropPipeline.Position position = PropPipeline.Position.unknown;
     @Override
     public void run() {
         position = robot.aPipe.getPosition();
+
     }
 
     private void configureCommands() {

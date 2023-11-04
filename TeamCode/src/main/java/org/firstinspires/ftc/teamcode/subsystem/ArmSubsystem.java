@@ -29,16 +29,12 @@ public class ArmSubsystem extends SubsystemBase {
     public double wristUp = .46, wristDown = .8, wristGround, wristNeutral, wristFlip = .35;
     //wristup was .48
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
-    private PController slideController = new PController(.008);
-    private double slidePower = .6;
-    private int slidePosition;
-    private AnalogInput armInput;
-    public static double kp = .025, ki = 0.05, kd = 0.001;
-    public static double kf = 0;
-    public static PIDController controller;
-
     public static FtcDashboard dashboard;
-    public static int target = 180;
+    private double p=.008, i=0, d=0, f=0;
+    private PIDFController slideController = new PIDFController(p,i,d,f);
+    private double slidePower = 1;
+    public static int slidePosition = 0;
+    private AnalogInput armInput;
     private Telemetry telemetry;
 
     public ArmSubsystem(DcMotorEx slide1, DcMotorEx slide2, Servo arm1, Servo arm2, AnalogInput input, Servo wrist, Telemetry telemetry) {
@@ -94,27 +90,17 @@ public class ArmSubsystem extends SubsystemBase {
         }
         slide1.setPower(slidePower);
         slide2.setPower(slidePower);
-//        FtcDashboard dashboard = FtcDashboard.getInstance();
-//        telemetry = dashboard.getTelemetry();
-//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
-//        //TODO: add pidf for arm servos
-//        position = (int) (armInput.getVoltage() * (360 / 3.3));
-//        controller.setPID(kp, ki, kd);
-//        double pid = controller.calculate(position, target);
-//        double ff = Math.cos(target-128) * kf;
-//
-//        double power = pid + ff;
-//
-//        arm1.setPower(power/5.0);
-//        arm2.setPower(power/5.0);
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
-        telemetry.addData("pos", position);
-        telemetry.addData("target", target);
+
+
+        telemetry.addData("ArmPos", position);
+        telemetry.addData("slidePower",slidePower);
         /*telemetry.addData("power", power);
         telemetry.addData("f", ff);*/
-        telemetry.addData("arm power",arm1.getPosition());
         telemetry.addData("wrist", wrist.getPosition());
         telemetry.update();
     }

@@ -95,7 +95,6 @@ public class Main {
         //arm subsysem
         arm1 = hardwareMap.get(Servo.class, "Rarm");
         arm2 = hardwareMap.get(Servo.class, "Larm");
-        ArmSubsystem.controller = new PIDController(ArmSubsystem.kp, ArmSubsystem.ki, ArmSubsystem.kd);
         analogInput = hardwareMap.get(AnalogInput.class, "armAnalog");
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
