@@ -30,7 +30,7 @@ public class ArmSubsystem extends SubsystemBase {
     //wristup was .48
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
     public static FtcDashboard dashboard;
-    private double p=0.003, i=0.05, d=0.00001, f=0.004;
+    private double p=0.003, i=0.2, d=0.0001, f=0.001;
     private PIDFController slideController = new PIDFController(p,i,d,f);
     private double slidePower = 1;
     public static int slidePosition = 0;
@@ -41,7 +41,7 @@ public class ArmSubsystem extends SubsystemBase {
         this.slide1 = slide1;
         this.slide2 = slide2;
         this.arm1 = arm1;
-        slide2.setDirection(DcMotorSimple.Direction.REVERSE);
+        slide1.setDirection(DcMotorSimple.Direction.REVERSE);
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.arm2 = arm2;
@@ -88,8 +88,13 @@ public class ArmSubsystem extends SubsystemBase {
         if(slide1.getCurrentPosition() < 10) {
             slidePower = Math.max(0, slidePower);
         }
-        slide1.setPower(slidePower);
-        slide2.setPower(slidePower);
+        if(slidePosition < 50) {
+            slide1.setPower(0);
+            slide2.setPower(0);
+        } else {
+            slide1.setPower(slidePower);
+            slide2.setPower(slidePower);
+        }
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
