@@ -18,7 +18,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 
 public class slidePIDF extends LinearOpMode {
 
-    public static double p=0, i=0, d=0, f=0;
+    public static double p=0.003, i=0.05, d=0.00001, f=0.004;
     private PIDFController controller = new PIDFController(p,i,d,f);
     public static int target = 0;
     private DcMotorEx slide1, slide2;
@@ -31,8 +31,11 @@ public class slidePIDF extends LinearOpMode {
 
         slide1 = hardwareMap.get(DcMotorEx.class, "slide1");
         slide2 = hardwareMap.get(DcMotorEx.class, "slide2");
-        slide2.setDirection(DcMotorEx.Direction.REVERSE);
-        slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slide1.setDirection(DcMotorEx.Direction.REVERSE);
+        slide2.setDirection(DcMotorSimple.Direction.FORWARD);
+        slide1.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        slide1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -43,12 +46,16 @@ public class slidePIDF extends LinearOpMode {
             telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
             int slidePos = slide1.getCurrentPosition();
             double pidf = controller.calculate(slidePos, target);
-            slide1.setPower(pidf);
-            slide2.setPower(pidf);
-
+            if(pidf>=0) {
+                slide1.setPower(pidf);
+                slide2.setPower(pidf);
+            } else {
+                slide1.setPower(pidf);
+                slide2.setPower(pidf);
+            }
             telemetry.addData("pos", slidePos);
             telemetry.addData("target", target);
-            telemetry.addData("error", target - slidePos);
+            telemetry.addData("error", Math.abs(target - slidePos));
             telemetry.update();
         }
     }

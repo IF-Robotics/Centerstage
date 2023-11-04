@@ -30,7 +30,7 @@ public class ArmSubsystem extends SubsystemBase {
     //wristup was .48
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
     public static FtcDashboard dashboard;
-    private double p=.008, i=0, d=0, f=0;
+    private double p=0.003, i=0.05, d=0.00001, f=0.004;
     private PIDFController slideController = new PIDFController(p,i,d,f);
     private double slidePower = 1;
     public static int slidePosition = 0;
