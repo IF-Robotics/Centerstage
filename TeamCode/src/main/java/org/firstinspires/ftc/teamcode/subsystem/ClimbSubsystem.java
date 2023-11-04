@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class ClimbSubsystem extends SubsystemBase {
-    private DcMotorEx motor;
+    public DcMotorEx motor;
     private Telemetry telemetry;
     private double power = 0;
     int MAX = 2400, MIN = 100;
@@ -27,6 +27,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public void setPower(double power) {
         this.power = power;
+    }
+
+    public void setRunMode(DcMotor.RunMode mode) {
+        motor.setMode(mode);
     }
 
     public void setPower(double power, Gamepad gamepad) {

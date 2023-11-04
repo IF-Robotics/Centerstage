@@ -13,6 +13,7 @@ public class AirplaneSubsystem extends SubsystemBase {
 
     public AirplaneSubsystem(Servo servo, Telemetry telemetry) {
         this.servo = servo;
+//        servo.setPosition(reset);
         this.telemetry = telemetry;
     }
 
