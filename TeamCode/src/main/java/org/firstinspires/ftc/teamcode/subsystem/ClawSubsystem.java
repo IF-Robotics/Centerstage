@@ -22,15 +22,13 @@ public class ClawSubsystem extends SubsystemBase {
     }
 
     public void open() {
-        isGoalOpen = true;
+            setLower(openL);
+            setUpper(openU);
     }
 
     public void close() {
-        isGoalOpen = false;
-    }
-
-    public void toggle() {
-        isGoalOpen = !isOpenRn;
+        setLower(closeL);
+        setUpper(closeU);
     }
 
     public void setLower(double position) {
@@ -42,7 +40,7 @@ public class ClawSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(isGoalOpen != isOpenRn) {
+        /*if(isGoalOpen != isOpenRn) {
             if(isGoalOpen) {
                 setLower(openL);
                 setUpper(openU);
@@ -52,7 +50,7 @@ public class ClawSubsystem extends SubsystemBase {
                 setUpper(closeU);
                 isOpenRn = false;
             }
-        }
+        }*/
 //        telemetry.addData("lower", lower.getPosition())
     }
 }
