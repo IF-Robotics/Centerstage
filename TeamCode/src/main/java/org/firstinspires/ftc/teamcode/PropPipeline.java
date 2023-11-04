@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.opencv.core.Core;
@@ -7,6 +8,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -33,6 +35,8 @@ public class PropPipeline extends OpenCvPipeline {
         double maxHeight = 0;
         int maxIndex = 0;
         MatOfPoint maxContour;
+        Rect roi = new Rect(0, 100, 640, 300);
+        Scalar low = new Scalar(120,0*255/100,40*255/100), high = new Scalar(180,20*255/100,100*255/100);
         /*
          * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
          * highly recommended to declare them here as instance variables and re-use them for
@@ -41,6 +45,16 @@ public class PropPipeline extends OpenCvPipeline {
          * by forgetting to call mat.release(), and it also reduces memory pressure by not
          * constantly allocating and freeing large chunks of memory.
          */
+
+        public PropPipeline(boolean isRed) {
+            if(isRed == true) {
+//                low = new Scalar(0,50*255/100,40*255/100);
+//                high = new Scalar(15,100*255/100,90*255/100);
+            } else {
+                low = new Scalar(70,30*255/100,60*255/100);
+                high = new Scalar(130,100*255/100,100*255/100);
+            }
+        }
 
         @Override
         public Mat processFrame(Mat input) {
@@ -54,12 +68,13 @@ public class PropPipeline extends OpenCvPipeline {
 
             List<MatOfPoint> contours = new ArrayList<>();
             Imgproc.GaussianBlur(input, dst, new Size(5,5), 0);
+//            Mat crop = new Mat(dst, roi);
             Imgproc.cvtColor(dst, hsv, Imgproc.COLOR_RGB2HSV);
             // the values for the color scalar in this are hsv, h is 0-180,
             // so half the precision of a normal color wheel for hue,
             // then saturation and value go to 255,
             // you need to convert the normal 0-100 to 0-255
-            Core.inRange(hsv, new Scalar(120,0*255/100,40*255/100), new Scalar(180,20*255/100,100*255/100), tresh);
+            Core.inRange(hsv, low, high, tresh);
 //            Core.inRange(hsv, new Scalar(120,0,80), new Scalar(180,60,140), tresh);
 
             Imgproc.findContours(tresh, contours, hierarchy, Imgproc.RETR_TREE
@@ -84,12 +99,12 @@ public class PropPipeline extends OpenCvPipeline {
                 catch(Exception e) {
                     Log.println(Log.ERROR,"im still here >:D","aughhhh "+i+" "+contours.size());
                 }
-                if ( (area>800) && (area > maxArea) ) {
+                if ( (area>1000) && (area > maxArea) ) {
                     maxArea=area;
                     maxWidth = width;
                     maxContour=contours.get(i);
                 }
-                if(area>200){
+                if(area>1000){
                     Imgproc.drawContours(input, contours, -1, color, 2
                             , Imgproc.LINE_8, hierarchy, 2, new Point());
                     MatOfPoint point2 = contours.get(i);

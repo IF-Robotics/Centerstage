@@ -36,7 +36,7 @@ public class CameraTest extends LinearOpMode {
             public void onError(int errorCode) {
             }
         });
-        this.aPipe = new PropPipeline();
+        this.aPipe = new PropPipeline(true);
         autoCam.setPipeline(aPipe);
 
         autoCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
@@ -58,7 +58,7 @@ public class CameraTest extends LinearOpMode {
             telemetry.addData("position", aPipe.getPosition());
             telemetry.addData("x-value", aPipe.getX());
             telemetry.addData("y-value", aPipe.getY());
-            telemetry.addData("max area", aPipe.getMaxContour());
+            telemetry.addData("max area", aPipe.getArea());
             telemetry.update();
         }
     }
