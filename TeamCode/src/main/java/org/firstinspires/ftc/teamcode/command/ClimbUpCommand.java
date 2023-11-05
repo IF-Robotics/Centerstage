@@ -10,7 +10,7 @@ public class ClimbUpCommand extends CommandBase {
     public ClimbUpCommand(ClimbSubsystem climb) {
         this.climb = climb;
         addRequirements(climb);
-        climb.motor.setTargetPosition(2100);
+        climb.motor.setTargetPosition(2600);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class ClimbSubsystem extends SubsystemBase {
     public DcMotorEx motor;
     private Telemetry telemetry;
     private double power = 0;
-    int MAX = 2400, MIN = 100;
+    int MAX = 3000, MIN = 100;
 
     public ClimbSubsystem(DcMotorEx motor, Telemetry telemetry) {
         this.motor = motor;

@@ -45,6 +45,9 @@ public class ArmSubsystem extends SubsystemBase {
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.arm2 = arm2;
+        arm1.setPosition(armFlip);
+        arm2.setPosition(armFlip);
+        wrist.setPosition(wristFlip);
         this.armInput = input;
         this.wrist = wrist;
         this.telemetry = telemetry;

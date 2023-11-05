@@ -59,10 +59,9 @@ public class PropPipeline extends OpenCvPipeline {
         // so half the precision of a normal color wheel for hue,
         // then saturation and value go to 255,
         // you need to convert the normal 0-100 to 0-255
-        Core.inRange(hsv, new Scalar(120,0*255/100,40*255/100), new Scalar(180,20*255/100,100*255/100), tresh);
-//            Core.inRange(hsv, new Scalar(120,0,80), new Scalar(180,60,140), tresh);
-//        let low = new cv.Mat(src.rows, src.cols, src.type(), [120, 0, 60*255/100, 0]);
-//        let high = new cv.Mat(src.rows, src.cols, src.type(), [180, 20*255/100, 95*255/100, 255]);
+        Core.inRange(hsv, new Scalar(70,30*255/100,60*255/100), new Scalar(130,100*255/100,100*255/100), tresh);
+//        Core.inRange(hsv, new Scalar(120,0,40*255/100), new Scalar(180,35*255/100,100*255/100), tresh);
+
 
         Imgproc.findContours(tresh, contours, hierarchy, Imgproc.RETR_TREE
                 , Imgproc.CHAIN_APPROX_NONE);

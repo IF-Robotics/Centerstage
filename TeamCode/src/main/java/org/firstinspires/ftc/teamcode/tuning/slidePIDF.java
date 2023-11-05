@@ -15,7 +15,7 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 
 @Config
 @TeleOp(name="slidePIDF")
-
+@Disabled
 public class slidePIDF extends LinearOpMode {
 
     public static double p=0.003, i=0.1, d=0.0001, f=0.001;

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class AirplaneSubsystem extends SubsystemBase {
     private Servo servo;
     private Telemetry telemetry;
-    public double reset = 0, shoot = 1; //TODO: make real values
+    public double reset = .55, shoot = .86; //TODO: make real values
 
     public AirplaneSubsystem(Servo servo, Telemetry telemetry) {
         this.servo = servo;

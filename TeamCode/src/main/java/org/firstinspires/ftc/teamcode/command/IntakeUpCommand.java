@@ -18,7 +18,7 @@ public class IntakeUpCommand extends CommandBase {
     @Override
     public void initialize() {
         timer.reset();
-        intakeSubsystem.setPower(-1);
+        intakeSubsystem.setPower(-.6);
     }
 
     @Override
