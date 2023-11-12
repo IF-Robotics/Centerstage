@@ -110,7 +110,7 @@ public class Teleop extends CommandOpMode {
     public void configureCommands() {
         mecanumCommand = new TeledriveCommand(robot.driveSubsystem, hardwareMap, gamepad1);
         intakeDown = new InstantCommand(() -> { robot.intakeSubsystem.setPosition(robot.intakeSubsystem.down);
-            robot.intakeSubsystem.setPower(.85);}, robot.intakeSubsystem);
+            robot.intakeSubsystem.setPower(1);}, robot.intakeSubsystem);
         intakeUp = new IntakeUpCommand(robot.intakeSubsystem);
         closeClaw = new InstantCommand(() -> {robot.clawSubsystem.close();}, robot.clawSubsystem);
         openClaw = new InstantCommand(() -> {robot.clawSubsystem.open();}, robot.clawSubsystem);
