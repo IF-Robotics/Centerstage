@@ -29,10 +29,10 @@ public class Teleop extends CommandOpMode {
     private TeledriveCommand mecanumCommand;
     private ReadyScoreCommand readyScore;
     private ArmDownCommand armDown;
-    private Command intakeDown, intakeUp, closeClaw, openClaw, closeLower, closeUpper, armUp, shootPlane, flipCommand, manualSlide, resetIMU, climbUp, climbDown, climbDefault;
+    private Command intakeDown, intakeUp, closeClaw, openClaw, closeLower, closeUpper, armUp, shootPlane, flipCommand, manualSlide, resetIMU, climbUp, climbDown, climbDefault, straighten;
     CommandScheduler scheduler = CommandScheduler.getInstance();
-    private Button up2, down2, up1, a1, a2, b2, x2, y2, lb2, rb2, l2, r2;
-    private Trigger lt2, rt2;
+    private Button up2, down2, up1, a1, a2, b2, x2, y2, lb2, rb2, l2, r2, st;
+    private Trigger lt2, rt2, rt1;
     private GamepadEx gpad2;
     private GamepadEx gpad1;
     private TransferPixelCommand transfer;
@@ -72,7 +72,10 @@ public class Teleop extends CommandOpMode {
         telemetry.addData("arm Command", robot.armSubsystem.getCurrentCommand());
 
         //reset IMU
-        a1.whenPressed(resetIMU);
+        st.whenPressed(resetIMU);
+
+        //strighten dt
+        a1.whileActiveContinuous(straighten);
 
         //climb
         rb2.whileHeld(climbUp);
@@ -123,6 +126,7 @@ public class Teleop extends CommandOpMode {
         manualSlide = new InstantCommand(() -> {robot.armSubsystem.addSlidePosition( (int) (-10 * gamepad2.left_stick_y));});
         transfer = new TransferPixelCommand(robot.intakeSubsystem, robot.armSubsystem, robot.clawSubsystem, telemetry);
         resetIMU = new InstantCommand(() -> robot.driveSubsystem.resetIMU());
+        straighten = new RunCommand(()-> robot.driveSubsystem.straighten());
         climbDefault = new RunCommand(() -> robot.climbSubsystem.setPower(1, gamepad2), robot.climbSubsystem);
         climbUp = new ClimbUpCommand(robot.climbSubsystem);
         climbDown = new ClimbDownCommand(robot.climbSubsystem);
@@ -139,11 +143,14 @@ public class Teleop extends CommandOpMode {
         y2 = new GamepadButton(gpad2, GamepadKeys.Button.Y);
         lb2 = new GamepadButton(gpad2, GamepadKeys.Button.LEFT_BUMPER);
         rb2 = new GamepadButton(gpad2, GamepadKeys.Button.RIGHT_BUMPER);
-        lt2 = new Trigger(() -> (gamepad2.left_trigger > .3));
-        rt2 = new Trigger(() -> (gamepad2.right_trigger > .3));
+        lt2 = new Trigger(() -> (gamepad2.left_trigger > .1));
+        rt2 = new Trigger(() -> (gamepad2.right_trigger > .1));
         l2 = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_LEFT);
         r2 = new GamepadButton(gpad2, GamepadKeys.Button.DPAD_RIGHT);
         up1 = new GamepadButton(gpad1, GamepadKeys.Button.DPAD_UP);
+        rt1 = new Trigger(() -> (gamepad1.right_trigger > .1));
+        st = new GamepadButton(gpad1, GamepadKeys.Button.START);
+
     }
 }
 

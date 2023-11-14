@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystem.DriveSubsystem;
 
 public class TeledriveCommand extends CommandBase {
     DriveSubsystem driveSubsystem;
-    private double power = .9;
+    private double power = 1;
     private double tempPower = 0;
     private Gamepad gamepad1;
 

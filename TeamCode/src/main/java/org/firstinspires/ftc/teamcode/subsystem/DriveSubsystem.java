@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -28,6 +29,16 @@ public class DriveSubsystem extends SubsystemBase {
     private Direction dir = Direction.forward;
 
     private double power = 0;
+
+    //imu variables
+    double integralSum = 0;
+    double Kp=1,Ki=.1,Kd=0.0001;
+    ElapsedTime timer = new ElapsedTime();
+    private double lastError = 0;
+    double target = 0;
+    double referenceAngle = 0;
+
+
     private DcMotor.RunMode runMode = DcMotor.RunMode.RUN_WITHOUT_ENCODER;
     private IMU imu;
 
@@ -53,6 +64,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void resetIMU() {
         imu.resetYaw();
+        target = 0;
+    }
+
+    public void straighten() {
+        target = 0;
     }
 
     public void drive(double power, Direction dir) {
@@ -102,12 +118,21 @@ public class DriveSubsystem extends SubsystemBase {
             BR.setPower(power * backRightPower);
             return false;
         }
-
-        double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
-        double x = 1.3 * gamepad1.left_stick_x;
-        double rx = gamepad1.right_stick_x;
-
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        referenceAngle = Math.toRadians(target);
+        double y = -gamepad1.left_stick_y;; // Remember, Y stick value is reversed
+        double x = 1.3 * gamepad1.left_stick_x;
+        double rx;
+
+        if(gamepad1.right_stick_x > 0.1 || gamepad1.right_stick_x < -.1){
+            rx = gamepad1.right_stick_x;
+            target = Math.toDegrees(botHeading);
+            integralSum = 0;
+        } else{
+            rx = -PIDcontrol(referenceAngle, botHeading);
+        }
+
 
         // Rotate the movement direction counter to the bot's rotation
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -167,8 +192,32 @@ public class DriveSubsystem extends SubsystemBase {
             }
         }
 
+        telemetry.addData("pos target", target);
         telemetry.addData("drive amps", BL.getCurrent(CurrentUnit.AMPS) + BR.getCurrent(CurrentUnit.AMPS) + FL.getCurrent(CurrentUnit.AMPS) + FR.getCurrent(CurrentUnit.AMPS));
-//        telemetry.update();
+        telemetry.update();
+    }
+    public double angleWrap(double radians) {
+
+        while (radians > Math.PI) {
+            radians -= 2 * Math.PI;
+        }
+        while (radians < -Math.PI) {
+            radians += 2 * Math.PI;
+        }
+
+        // keep in mind that the result is in radians
+        return radians;
+    }
+    public double PIDcontrol(double reference, double state) {
+        double error = angleWrap(reference - state);
+        integralSum += error * timer.seconds();
+        double derivative = (error - lastError) / timer.seconds();
+        lastError = error;
+
+        timer.reset();
+
+        double output = (error * Kp) + (derivative * Kd) + (integralSum * Ki);
+        return output;
     }
 }
 
