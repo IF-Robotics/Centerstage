@@ -23,10 +23,10 @@ import org.checkerframework.checker.units.qual.degrees;
 public class ArmSubsystem extends SubsystemBase {
     private DcMotorEx slide1, slide2;
     private Servo arm1, arm2;
-    public double armDown = .869, armUp = .159, armGround, armNeutral = .75, armFlip = .867;
+    public double armDown = .869, armUp = .159, armGround, armNeutral = .75, armFlip = .892;
     //armup was .285
     private Servo wrist;
-    public double wristDown = .811, wristUp = .475, wristGround, wristNeutral, wristFlip = .17;
+    public double wristDown = .811, wristUp = .475, wristGround, wristNeutral, wristFlip = .169;
     //wristup was .48
     private int position = 0, setpoint = 0; //TODO: find the actual value of this
     public static FtcDashboard dashboard;
